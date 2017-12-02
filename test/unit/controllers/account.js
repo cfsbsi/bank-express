@@ -124,3 +124,42 @@ describe('Transfer money: transfer()', () => {
             });
     });
 });
+
+describe('Get a account: get()', () => {
+    it('should get a account by id', () => {
+        const Accounts = {
+            getById: td.function(),
+        };
+
+        const expectedResponse = {
+            id: 1,
+            balance: 0,
+            created_at: '2016-08-06T23:55:36.692Z',
+            updated_at: '2016-08-06T23:55:36.692Z',
+        };
+
+        td.when(Accounts.getById(1)).thenResolve(expectedResponse);
+
+        const accountsController = new BooksController(Accounts);
+        return accountsController.get(1)
+            .then(response => {
+                expect(response.data).to.be.eql(expectedResponse);
+                expect(response.statusCode).to.be.eql(200);
+            });
+    });
+
+    it('should get a message the account does not exists', () => {
+        const Accounts = {
+            getById: td.function(),
+        };
+
+        td.when(Accounts.getById(1)).thenResolve(null);
+
+        const accountsController = new BooksController(Accounts);
+        return accountsController.get(1)
+            .then(response => {
+                expect(response.data.error).to.be.eql('Account does not exist');
+                expect(response.statusCode).to.be.eql(400);
+            });
+    });
+});

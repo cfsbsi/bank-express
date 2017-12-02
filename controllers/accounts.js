@@ -20,6 +20,17 @@ class AccountsController {
             .catch(error => errorResponse(error.message, HttpStatus.UNPROCESSABLE_ENTITY));
     }
 
+    get(id) {
+        return this.Accounts.getById(id)
+            .then(result => {
+                if(result === null){
+                    throw {message: 'Account does not exist'};
+                }
+                return defaultResponse(result);
+            })
+            .catch(error => errorResponse(error.message));
+    }
+
     transfer(data) {
         let source_account;
         let destination_account;
@@ -27,16 +38,16 @@ class AccountsController {
         return this.Accounts.getById(data.source_account_id)
             .then(result => {
                 if (result === null) {
-                    throw 'invalid source account'
+                    throw {message: 'invalid source account'};
                 }
                 if (data.amount > result.balance) {
-                    throw 'Not enough money on the source account';
+                    throw {message: 'Not enough money on the source account'};
                 }
                 source_account = result;
                 return this.Accounts.getById(data.destination_account_id);
             }).then(result => {
                 if (result === null) {
-                    throw 'invalid destination account'
+                    throw {message: 'invalid destination account'}
                 }
                 destination_account = result;
                 const balance = source_account.balance - data.amount;
@@ -48,7 +59,7 @@ class AccountsController {
                 return {statusCode: HttpStatus.OK};
             })
             .catch(error => {
-                return errorResponse(error, HttpStatus.UNPROCESSABLE_ENTITY)
+                return errorResponse(error.message, HttpStatus.UNPROCESSABLE_ENTITY)
             });
     }
 }
