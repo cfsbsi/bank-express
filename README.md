@@ -4,7 +4,7 @@ A Bank backend in [Express](http://expressjs.com)
 
 ## Getting Started
 
-Copy the project and run 
+Clone the project and run 
 
 ```
 npm install
