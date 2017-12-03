@@ -1,4 +1,5 @@
-import BooksController from '../../../controllers/accounts';
+import HttpStatus from 'http-status';
+import AccountsController from '../../../controllers/accounts';
 
 describe('Create a account: create()', () => {
     it('should create a account', () => {
@@ -7,7 +8,7 @@ describe('Create a account: create()', () => {
         };
 
         const requestBody = {
-            name: 'Test Book',
+            balance: 0,
         };
 
         const expectedResponse = [{
@@ -19,11 +20,11 @@ describe('Create a account: create()', () => {
 
         td.when(Accounts.create(requestBody)).thenResolve(expectedResponse);
 
-        const accountsController = new BooksController(Accounts);
+        const accountsController = new AccountsController(Accounts);
         return accountsController.create(requestBody)
             .then(response => {
                 expect(response.data).to.be.eql(expectedResponse);
-                expect(response.statusCode).to.be.eql(201);
+                expect(response.statusCode).to.be.eql(HttpStatus.CREATED);
             });
     });
 });
@@ -31,7 +32,7 @@ describe('Create a account: create()', () => {
 describe('Transfer money: transfer()', () => {
     it('should transfer a amount with success', () => {
         const Accounts = {
-            getById: td.function(),
+            findOne: td.function(),
             update: td.function(),
         };
 
@@ -41,20 +42,20 @@ describe('Transfer money: transfer()', () => {
             amount: 100
         };
 
-        td.when(Accounts.getById(1)).thenResolve({id: 1, balance: 200});
-        td.when(Accounts.getById(2)).thenResolve({id: 2, balance: 200});
-        td.when(Accounts.update()).thenResolve({statusCode: 200});
+        td.when(Accounts.findOne({where: {id: 1}})).thenResolve({id: 1, balance: 200});
+        td.when(Accounts.findOne({where: {id: 2}})).thenResolve({id: 2, balance: 200});
+        td.when(Accounts.update()).thenResolve({statusCode: HttpStatus.OK});
 
-        const accountsController = new BooksController(Accounts);
+        const accountsController = new AccountsController(Accounts);
         return accountsController.transfer(requestBody)
             .then(response => {
-                expect(response.statusCode).to.be.eql(200);
+                expect(response.statusCode).to.be.eql(HttpStatus.OK);
             });
     });
 
     it('should return a invalid source account', () => {
         const Accounts = {
-            getById: td.function(),
+            findOne: td.function(),
             update: td.function(),
         };
 
@@ -64,21 +65,21 @@ describe('Transfer money: transfer()', () => {
             amount: 100
         };
 
-        td.when(Accounts.getById(1)).thenResolve(null);
-        td.when(Accounts.getById(2)).thenResolve({id: 2, balance: 200});
-        td.when(Accounts.update()).thenResolve({statusCode: 200});
+        td.when(Accounts.findOne({where: {id: 1}})).thenResolve(null);
+        td.when(Accounts.findOne({where: {id: 2}})).thenResolve({id: 2, balance: 200});
+        td.when(Accounts.update()).thenResolve({statusCode: HttpStatus.OK});
 
-        const accountsController = new BooksController(Accounts);
+        const accountsController = new AccountsController(Accounts);
         return accountsController.transfer(requestBody)
             .then(response => {
-                expect(response.statusCode).to.be.eql(422);
+                expect(response.statusCode).to.be.eql(HttpStatus.UNPROCESSABLE_ENTITY);
                 expect(response.data.error).to.be.eql('invalid source account');
             });
     });
 
     it('should return a invalid destination account', () => {
         const Accounts = {
-            getById: td.function(),
+            findOne: td.function(),
             update: td.function(),
         };
 
@@ -88,21 +89,21 @@ describe('Transfer money: transfer()', () => {
             amount: 100
         };
 
-        td.when(Accounts.getById(1)).thenResolve({id: 1, balance: 200});
-        td.when(Accounts.getById(2)).thenResolve(null);
-        td.when(Accounts.update()).thenResolve({statusCode: 200});
+        td.when(Accounts.findOne({where: {id: 1}})).thenResolve({id: 1, balance: 200});
+        td.when(Accounts.findOne({where: {id: 2}})).thenResolve(null);
+        td.when(Accounts.update()).thenResolve({statusCode: HttpStatus.OK});
 
-        const accountsController = new BooksController(Accounts);
+        const accountsController = new AccountsController(Accounts);
         return accountsController.transfer(requestBody)
             .then(response => {
-                expect(response.statusCode).to.be.eql(422);
+                expect(response.statusCode).to.be.eql(HttpStatus.UNPROCESSABLE_ENTITY);
                 expect(response.data.error).to.be.eql('invalid destination account');
             });
     });
 
     it('should get a message with not enough money on source account', () => {
         const Accounts = {
-            getById: td.function(),
+            findOne: td.function(),
             update: td.function(),
         };
 
@@ -112,14 +113,15 @@ describe('Transfer money: transfer()', () => {
             amount: 200.01
         };
 
-        td.when(Accounts.getById(1)).thenResolve({id: 1, balance: 200});
-        td.when(Accounts.getById(2)).thenResolve({id: 2, balance: 200});
-        td.when(Accounts.update()).thenResolve({statusCode: 200});
+        td.when(Accounts.findOne({where: {id: 1}})).thenResolve({id: 1, balance: 200});
+        td.when(Accounts.findOne({where: {id: 2}})).thenResolve({id: 2, balance: 200});
+        td.when(Accounts.update()).thenResolve({statusCode: HttpStatus.OK});
 
-        const accountsController = new BooksController(Accounts);
+        const accountsController = new AccountsController(Accounts);
+
         return accountsController.transfer(requestBody)
             .then(response => {
-                expect(response.statusCode).to.be.eql(422);
+                expect(response.statusCode).to.be.eql(HttpStatus.UNPROCESSABLE_ENTITY);
                 expect(response.data.error).to.be.eql('Not enough money on the source account');
             });
     });
@@ -128,7 +130,7 @@ describe('Transfer money: transfer()', () => {
 describe('Get a account: get()', () => {
     it('should get a account by id', () => {
         const Accounts = {
-            getById: td.function(),
+            findOne: td.function(),
         };
 
         const expectedResponse = {
@@ -138,28 +140,28 @@ describe('Get a account: get()', () => {
             updated_at: '2016-08-06T23:55:36.692Z',
         };
 
-        td.when(Accounts.getById(1)).thenResolve(expectedResponse);
+        td.when(Accounts.findOne({where: {id: 1}})).thenResolve(expectedResponse);
 
-        const accountsController = new BooksController(Accounts);
+        const accountsController = new AccountsController(Accounts);
         return accountsController.get(1)
             .then(response => {
                 expect(response.data).to.be.eql(expectedResponse);
-                expect(response.statusCode).to.be.eql(200);
+                expect(response.statusCode).to.be.eql(HttpStatus.OK);
             });
     });
 
     it('should get a message the account does not exists', () => {
         const Accounts = {
-            getById: td.function(),
+            findOne: td.function(),
         };
 
-        td.when(Accounts.getById(1)).thenResolve(null);
+        td.when(Accounts.findOne({where: {id: 1}})).thenResolve(null);
 
-        const accountsController = new BooksController(Accounts);
+        const accountsController = new AccountsController(Accounts);
         return accountsController.get(1)
             .then(response => {
                 expect(response.data.error).to.be.eql('Account does not exist');
-                expect(response.statusCode).to.be.eql(400);
+                expect(response.statusCode).to.be.eql(HttpStatus.BAD_REQUEST);
             });
     });
 });

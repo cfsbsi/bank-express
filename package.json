@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "babel-node index.js --presets es2015,stage-2",
-    "test-unit": "NODE_ENV=test mocha --opts test/unit/mocha.opts test/unit/**/*.js"
+    "test": "npm run test-unit && npm run test-integration",
+    "test-unit": "NODE_ENV=test mocha --opts test/unit/mocha.opts test/unit/**/*.js",
+    "test-integration": "NODE_ENV=test mocha --opts test/integration/mocha.opts test/integration/**/*.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,11 +18,16 @@
     "babel-preset-stage-2": "^6.24.1",
     "chai": "^4.1.2",
     "mocha": "^4.0.1",
-    "testdouble": "^3.2.6",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "testdouble": "^3.2.6"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "http-status": "^1.0.1"
+    "http-status": "^1.0.1",
+    "pg": "^6.4.2",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.24.0",
+    "sqlite3": "^3.1.13"
   }
 }
