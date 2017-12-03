@@ -10,6 +10,7 @@ export default (sequelize, DataType) => {
       allowNull: false,
       validate: {
         notEmpty: true,
+        min: 0,
       },
     },
   });

@@ -4,14 +4,14 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router'
 import {loadAccounts} from './Action'
 
-class AccountComponent extends React.Component {
+class AllAccounts extends React.Component {
 
     componentDidMount() {
         this.props.getAccounts();
     }
 
     render() {
-        return (
+        return this.props.accounts&&this.props.accounts.length>0?(
             <div>
                 {this.props.accounts.map((account) => (
                     <div key={account.id}>
@@ -23,10 +23,9 @@ class AccountComponent extends React.Component {
                             </Panel>
                         </Col>
                     </div>
-
                 ))}
             </div>
-        )
+        ):(<div>Accounts not found, please create an account!</div>);
     }
 }
 
@@ -40,4 +39,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AccountComponent));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AllAccounts));
