@@ -20,6 +20,17 @@ class AccountsController {
       .catch(error => errorResponse(error.message, HttpStatus.UNPROCESSABLE_ENTITY));
   }
 
+  getAll() {
+    return this.Accounts.findAll({})
+      .then((result) => {
+        if (result.length === 0) {
+          throw new Error('We don\'t have anny account');
+        }
+        return defaultResponse(result);
+      })
+      .catch(error => errorResponse(error.message));
+  }
+
   get(id) {
     return this.Accounts.findOne({ where: { id } })
       .then((result) => {

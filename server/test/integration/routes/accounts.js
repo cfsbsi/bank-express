@@ -37,6 +37,36 @@ describe('Routes: Accounts', () => {
         });
     });
 
+    describe('GET /accounts', () => {
+        it('should return all account', done => {
+            Accounts
+                .destroy({where: {}}).then(() => {
+
+                request
+                    .get('/accounts')
+                    .end((err, res) => {
+                        expect(res.body.error).to.eql('We don\'t have anny account');
+                        done(err);
+                    });
+            });
+        });
+
+        it('should return we don\'t have anny account message', done => {
+
+
+            request
+                .get('/accounts')
+                .end((err, res) => {
+                    expect(res.body[0].id).to.eql(createdAccount1.id);
+                    expect(res.body[0].balance).to.eql(createdAccount1.balance);
+                    expect(res.body[1].id).to.eql(createdAccount2.id);
+                    expect(res.body[1].balance).to.eql(createdAccount1.balance);
+                    expect(res.statusCode).to.eql(HttpStatus.OK);
+                    done(err);
+                });
+        });
+    });
+
     describe('POST /transfer', () => {
         it('should transfer a amount', done => {
 

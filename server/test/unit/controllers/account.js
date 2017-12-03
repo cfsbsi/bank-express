@@ -165,3 +165,42 @@ describe('Get a account: get()', () => {
             });
     });
 });
+
+describe('Retrieve accounts: getAll()', () => {
+    it('should get all accounts', () => {
+        const Accounts = {
+            findAll: td.function(),
+        };
+
+        const expectedResponse = [{
+            id: 1,
+            balance: 0,
+            created_at: '2016-08-06T23:55:36.692Z',
+            updated_at: '2016-08-06T23:55:36.692Z',
+        }];
+
+        td.when(Accounts.findAll({})).thenResolve(expectedResponse);
+
+        const accountsController = new AccountsController(Accounts);
+        return accountsController.getAll()
+            .then(response => {
+                expect(response.data).to.be.eql(expectedResponse);
+                expect(response.statusCode).to.be.eql(HttpStatus.OK);
+            });
+    });
+
+    it('should return we don\t have anny account message', () => {
+        const Accounts = {
+            findAll: td.function(),
+        };
+        const expectedResponse = {error: 'We don\'t have anny account'};
+        td.when(Accounts.findAll({})).thenResolve(expectedResponse);
+
+        const accountsController = new AccountsController(Accounts);
+        return accountsController.getAll()
+            .then(response => {
+                expect(response.data).to.be.eql(expectedResponse);
+                expect(response.statusCode).to.be.eql(HttpStatus.OK);
+            });
+    });
+});
