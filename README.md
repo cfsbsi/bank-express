@@ -16,6 +16,32 @@ npm run test
 npm start
 ```
 
+## How to use
+
+It's running on port 7000
+
+|Info|Method|Path|Input|Output|
+| --- | --- | --- | --- | ---- |
+|Get all accounts|Get  | /accounts|| Array of account|
+|Create an account|Post | /accounts|An account payload||
+|Transfer a amount of money|Post | /transfer|A transfer payload||
+|Get one account by id|Get  | /accounts/{accountId}||An account
+
+Example of payloads
+
+Account
+```
+{"balance": 0}
+```
+Transfer
+```
+{
+	"amount": 100, 
+	"source_account_id": 1, 
+	"destination_account_id": 2
+}
+```
+
 ### Prerequisites
 
 ```
