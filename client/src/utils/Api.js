@@ -17,3 +17,11 @@ export function newAccount(body) {
         body: JSON.stringify(body)
     }).then(res => res.json());
 }
+
+export function transferMoney(body) {
+    return fetch(`http://${url}/transfer`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
+    });
+}

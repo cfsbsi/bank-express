@@ -10,6 +10,12 @@ class AllAccounts extends React.Component {
         this.props.getAccounts();
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.updateNow !== nextProps.updateNow){
+            this.props.getAccounts();
+        }
+    }
+
     render() {
         return this.props.accounts&&this.props.accounts.length>0?(
             <div>
@@ -29,8 +35,8 @@ class AllAccounts extends React.Component {
     }
 }
 
-function mapStateToProps({accounts}) {
-    return {accounts};
+function mapStateToProps({accounts, updateNow}) {
+    return {accounts, updateNow};
 }
 
 function mapDispatchToProps(dispatch) {

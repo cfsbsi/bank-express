@@ -1,5 +1,5 @@
-import {LOAD_ACCOUNTS_SUCCESS, CREATE_ACCOUNTS_SUCCESS} from '../utils/ActionTypes'
-import {fetchAccounts, newAccount} from '../utils/Api'
+import {LOAD_ACCOUNTS_SUCCESS, CREATE_ACCOUNTS_SUCCESS, TRANSFER_ACCOUNTS_SUCCESS} from '../utils/ActionTypes'
+import {fetchAccounts, newAccount, transferMoney} from '../utils/Api'
 
 export function loadAccounts() {
     return function (dispatch) {
@@ -27,4 +27,18 @@ export function createAccount(body) {
 
 export function createAccountSuccess(state) {
     return {type: CREATE_ACCOUNTS_SUCCESS, state};
+}
+
+export function transferAccount(body) {
+    return function (dispatch) {
+        transferMoney(body).then(() => {
+            dispatch(transferAccountSuccess(body))
+        }).catch(error => {
+            throw(error);
+        });
+    }
+}
+
+export function transferAccountSuccess(state) {
+    return {type: TRANSFER_ACCOUNTS_SUCCESS, state};
 }

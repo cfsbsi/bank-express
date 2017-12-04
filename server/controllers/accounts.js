@@ -61,11 +61,11 @@ class AccountsController {
           throw new Error('invalid destination account');
         }
         destinationAccount = result;
-        sourceAccount.balance -= data.amount;
+        sourceAccount.balance -= Number(data.amount);
         return this.Accounts
           .update({ balance: sourceAccount.balance }, { where: { id: sourceAccount.id } });
       }).then(() => {
-        destinationAccount.balance += data.amount;
+        destinationAccount.balance += Number(data.amount);
         return this.Accounts
           .update(
             { balance: destinationAccount.balance },
