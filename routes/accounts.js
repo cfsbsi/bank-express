@@ -29,4 +29,13 @@ export default (app) => {
           res.json(response.data);
         });
     });
+
+    app.route('/accounts/:id')
+        .get((req, res) => {
+            accountsController.get(req.params.id)
+                .then((response) => {
+                    res.status(response.statusCode);
+                    res.json(response.data);
+                });
+        });
 };

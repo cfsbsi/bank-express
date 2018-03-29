@@ -67,7 +67,6 @@ describe('Transfer money: transfer()', () => {
 
         td.when(Accounts.findOne({where: {id: 1}})).thenResolve(null);
         td.when(Accounts.findOne({where: {id: 2}})).thenResolve({id: 2, balance: 200});
-        td.when(Accounts.update()).thenResolve({statusCode: HttpStatus.OK});
 
         const accountsController = new AccountsController(Accounts);
         return accountsController.transfer(requestBody)
@@ -91,7 +90,6 @@ describe('Transfer money: transfer()', () => {
 
         td.when(Accounts.findOne({where: {id: 1}})).thenResolve({id: 1, balance: 200});
         td.when(Accounts.findOne({where: {id: 2}})).thenResolve(null);
-        td.when(Accounts.update()).thenResolve({statusCode: HttpStatus.OK});
 
         const accountsController = new AccountsController(Accounts);
         return accountsController.transfer(requestBody)
@@ -115,7 +113,6 @@ describe('Transfer money: transfer()', () => {
 
         td.when(Accounts.findOne({where: {id: 1}})).thenResolve({id: 1, balance: 200});
         td.when(Accounts.findOne({where: {id: 2}})).thenResolve({id: 2, balance: 200});
-        td.when(Accounts.update()).thenResolve({statusCode: HttpStatus.OK});
 
         const accountsController = new AccountsController(Accounts);
 

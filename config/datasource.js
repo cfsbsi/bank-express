@@ -33,6 +33,8 @@ export default function (app) {
 
     database.models = loadModels(sequelize);
 
+    database.models.Statements.belongsTo(database.models.Accounts);
+
     sequelize.sync().done(() => database);
   }
   return database;
